@@ -6,15 +6,16 @@
     <title>Naichi Bakery — Admin: Tambah Produk & Sinkronisasi Varian</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Custom small helpers */
       .naichi-focus:focus {
-        box-shadow: 0 0 12px rgba(250,196,70,0.28), 0 6px 18px rgba(0,0,0,0.06);
+        box-shadow: 0 0 16px rgba(248, 181, 0, 0.24), 0 12px 24px rgba(0, 0, 0, 0.08);
         outline: none;
-        border-color: rgba(250,196,70,0.8);
+        border-color: rgba(248, 181, 0, 0.8);
       }
-      .fade-in { animation: fadeIn .28s ease forwards; opacity:0 }
-      @keyframes fadeIn { to { opacity: 1 } }
-      .chip { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,246,240,0.9)); }
+      .fade-in { animation: fadeIn .28s ease forwards; opacity: 0; }
+      @keyframes fadeIn { to { opacity: 1; } }
+      .chip { background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(253, 244, 227, 0.95)); }
+      @keyframes toastSlide { from { transform: translateX(18px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+      .animate-toast { animation: toastSlide .25s ease-out both; }
     </style>
   </head>
   <body class="bg-gray-50 font-sans text-gray-800">
@@ -25,18 +26,17 @@
       </header>
 
       <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Left: Form -->
-        <section class="bg-white rounded-2xl shadow-lg p-6 naichi-focus" aria-labelledby="form-title">
-          <h2 id="form-title" class="text-xl font-medium mb-4">Form Produk</h2>
-          <form id="productForm" class="space-y-4" autocomplete="off">
+        <section class="bg-white rounded-2xl shadow-lg p-6" aria-labelledby="form-title">
+          <h2 id="form-title" class="text-xl font-medium mb-5">Form Produk</h2>
+          <form id="productForm" class="space-y-5" autocomplete="off">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Nama Produk</label>
-                <input id="name" name="name" required class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="e.g., Mille Feuille Matcha" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Kategori</label>
-                <select id="category" name="category" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus">
+              <label class="block">
+                <span class="text-sm font-medium text-gray-700">Nama Produk</span>
+                <input id="name" name="name" required class="mt-2 w-full px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white" placeholder="e.g., Mille Feuille Matcha" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-medium text-gray-700">Kategori</span>
+                <select id="category" name="category" class="mt-2 w-full px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white">
                   <option value="">— Pilih Kategori —</option>
                   <option>Pastry</option>
                   <option>Cake</option>
@@ -44,83 +44,88 @@
                   <option>Cookie</option>
                   <option>Beverage</option>
                 </select>
-              </div>
+              </label>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Harga</label>
-                <input id="price" name="price" inputmode="numeric" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="50000" />
+              <label class="block">
+                <span class="text-sm font-medium text-gray-700">Harga</span>
+                <input id="price" name="price" inputmode="numeric" class="mt-2 w-full px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white" placeholder="50000" />
                 <input type="hidden" id="price_raw" name="price_raw" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Stok</label>
-                <input id="stock" name="stock" type="number" min="0" value="10" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" />
-              </div>
+              </label>
+              <label class="block">
+                <span class="text-sm font-medium text-gray-700">Stok</span>
+                <input id="stock" name="stock" type="number" min="0" value="10" class="mt-2 w-full px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white" />
+              </label>
             </div>
+
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">Deskripsi</span>
+              <textarea id="description" name="description" rows="4" class="mt-2 w-full px-4 py-3 rounded-[28px] border border-gray-200 naichi-focus bg-white" placeholder="Deskripsi singkat produk untuk katalog..."></textarea>
+            </label>
+
+            <label class="block">
+              <span class="text-sm font-medium text-gray-700">URL Gambar</span>
+              <input id="image_url" name="image_url" class="mt-2 w-full px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white" placeholder="https://images.unsplash.com/..." />
+              <p class="mt-2 text-xs text-gray-400">Tempel URL atau gunakan area upload di kanan untuk simulasi drag & drop.</p>
+            </label>
 
             <div>
-              <label class="block text-sm font-medium mb-1">Deskripsi</label>
-              <textarea id="description" name="description" rows="3" class="w-full px-4 py-2 rounded-2xl border border-gray-200 naichi-focus" placeholder="Deskripsi singkat produk untuk katalog..."></textarea>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">URL Gambar</label>
-              <input id="image_url" name="image_url" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="https://images.unsplash.com/..." />
-              <p class="text-xs text-gray-400 mt-1">Tempel URL atau gunakan area upload di kanan untuk simulasi drag & drop.</p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">Varian Produk (Tags)</label>
-              <div id="variant-types" class="flex gap-2 mb-2">
-                <select id="variantTypeSelect" class="px-3 py-1 rounded-lg border border-gray-200 naichi-focus text-sm">
-                  <option value="Rasa">Rasa</option>
-                  <option value="Warna">Warna</option>
-                  <option value="Ukuran">Ukuran</option>
-                  <option value="Lainnya">Lainnya</option>
-                </select>
-                <input id="variantInput" class="flex-1 px-3 py-1 rounded-lg border border-gray-200 naichi-focus" placeholder="Ketik lalu tekan Enter untuk menambahkan tag" />
-                <button type="button" id="addVariantBtn" class="px-3 py-1 bg-amber-400 text-white rounded-lg">Tambah</button>
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium text-gray-700">Varian Produk (Tags)</span>
+                <span id="variantHint" class="text-xs text-gray-400">Tambah rasa, ukuran, warna, atau varian khusus</span>
               </div>
-              <div id="variants" class="flex flex-wrap gap-2"></div>
+              <div class="flex flex-col gap-3">
+                <div class="flex gap-2 flex-wrap">
+                  <select id="variantTypeSelect" class="px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white text-sm">
+                    <option value="Rasa">Rasa</option>
+                    <option value="Warna">Warna</option>
+                    <option value="Ukuran">Ukuran</option>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                  <input id="variantInput" class="flex-1 px-4 py-3 rounded-2xl border border-gray-200 naichi-focus bg-white" placeholder="Ketik lalu tekan Enter untuk menambahkan tag" />
+                  <button type="button" id="addVariantBtn" class="px-5 py-3 rounded-2xl bg-amber-400 text-white shadow-sm hover:bg-amber-500">Tambah</button>
+                </div>
+                <div id="categorySuggestions" class="flex flex-wrap gap-2"></div>
+                <div id="variants" class="flex flex-wrap gap-2"></div>
+              </div>
             </div>
 
-            <div class="flex items-center justify-between pt-3">
-              <div class="text-sm text-gray-500">Preview & sinkronisasi otomatis varian berdasarkan kategori aktif.</div>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p class="text-sm text-gray-500">Preview & sinkronisasi otomatis varian berdasarkan kategori aktif.</p>
               <div class="flex gap-2">
-                <button type="reset" class="px-4 py-2 rounded-xl border border-gray-200">Reset</button>
-                <button id="saveBtn" type="submit" class="px-4 py-2 rounded-xl bg-amber-400 text-white shadow">Simpan</button>
+                <button type="reset" class="px-5 py-3 rounded-2xl border border-gray-200 text-gray-700 hover:bg-gray-50">Reset</button>
+                <button id="saveBtn" type="submit" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 text-white font-semibold shadow-lg hover:shadow-xl transition">Simpan</button>
               </div>
             </div>
           </form>
         </section>
 
-        <!-- Right: Live Preview + Image Box -->
         <aside class="space-y-6">
-          <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center gap-4">
-            <div id="imageDrop" class="w-full h-48 md:h-56 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 relative transition-colors">
-              <input id="fileInput" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" />
-              <div id="imagePlaceholder" class="flex flex-col items-center gap-2 text-center text-gray-400 p-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7M7 7V5a5 5 0 0 1 10 0v2"/></svg>
-                <div class="text-sm">Tarik & lepas atau klik untuk pilih gambar</div>
-                <div class="text-xs text-gray-300">Atau tempel URL pada field gambar</div>
+          <div class="bg-white rounded-3xl shadow-lg p-4">
+            <div id="imageDrop" class="w-full h-56 rounded-3xl border-2 border-dashed border-gray-200 bg-gradient-to-br from-amber-50 to-white flex items-center justify-center overflow-hidden relative transition-all duration-200 hover:border-amber-300 hover:bg-amber-100">
+              <input id="fileInput" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" aria-label="Upload gambar produk" />
+              <div id="imagePlaceholder" class="flex flex-col items-center gap-3 text-center text-gray-400 p-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16v-4a4 4 0 0 1 4-4h3m4 0h1a4 4 0 0 1 4 4v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-1"/></svg>
+                <div class="text-sm font-medium">Tarik & lepas atau klik untuk pilih gambar</div>
+                <div class="text-xs text-gray-300">Atau tempel URL pada field gambar untuk preview langsung.</div>
               </div>
-              <img id="previewImage" src="" alt="Preview" class="object-cover w-full h-full hidden transition-opacity duration-300" />
+              <img id="previewImage" src="" alt="Preview Gambar Produk" class="object-cover w-full h-full hidden transition-opacity duration-300" />
             </div>
-            <div class="w-full text-xs text-gray-500">Drag & drop area dengan animasi mikro saat hover.</div>
+            <p class="mt-3 text-center text-xs text-gray-500">Area simulasi drag & drop dengan respons warna lembut saat hover.</p>
           </div>
 
-          <div class="bg-white rounded-2xl shadow-lg p-4">
-            <h3 class="text-lg font-medium mb-3">Live Product Card</h3>
+          <div class="bg-white rounded-3xl shadow-lg p-5">
+            <h3 class="text-lg font-semibold mb-4">Live Product Card</h3>
             <div id="liveCard" class="flex gap-4 items-start">
-              <div class="w-28 h-28 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 shadow-sm">
+              <div class="w-28 h-28 rounded-[28px] bg-gray-100 overflow-hidden shadow-sm flex-shrink-0">
                 <img id="cardImage" src="" alt="Card image" class="object-cover w-full h-full" />
               </div>
               <div class="flex-1">
                 <h4 id="cardName" class="font-semibold text-lg">Nama Produk</h4>
-                <div id="cardCategory" class="text-xs text-gray-400">Kategori</div>
-                <div id="cardPrice" class="text-amber-500 font-semibold mt-2">Rp 0</div>
-                <div id="cardVariants" class="flex gap-2 flex-wrap mt-3"></div>
+                <p id="cardCategory" class="text-xs text-gray-400 mt-1">Kategori</p>
+                <p id="cardPrice" class="text-amber-500 font-semibold mt-4">Rp 0</p>
+                <div id="cardVariants" class="flex flex-wrap gap-2 mt-3"></div>
                 <p id="cardDesc" class="text-sm text-gray-500 mt-3">Deskripsi singkat produk...</p>
               </div>
             </div>
@@ -128,633 +133,258 @@
         </aside>
       </main>
 
-      <!-- Toast container -->
-      <div id="toastContainer" class="fixed top-6 right-6 z-50"></div>
+      <div id="toastContainer" class="fixed top-6 right-6 z-50 space-y-3"></div>
     </div>
 
     <script>
-      // --- Data & initial mappings ---
+      const defaultImage = 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=800&q=80';
       const variantSuggestions = {
-        'Pastry': { type: 'Tingkat Kematangan/Isian', suggestions: ['Medium', 'Well-done', 'Isi Kacang', 'Isi Krim'] },
-        'Cake': { type: 'Ukuran Diameter', suggestions: ['15cm', '20cm', '25cm'] },
-        'Bread': { type: 'Tekstur', suggestions: ['Soft', 'Crunchy', 'Wholegrain'] },
-        'Cookie': { type: 'Rasa', suggestions: ['Cokelat', 'Vanilla', 'Matcha'] },
-        'Beverage': { type: 'Ukuran', suggestions: ['Regular', 'Large'] },
+        Pastry: { type: 'Tingkat Kematangan', suggestions: ['Medium', 'Well-done', 'Isi Krim', 'Isi Kacang'] },
+        Cake: { type: 'Ukuran Diameter', suggestions: ['15cm', '20cm', '25cm'] },
+        Bread: { type: 'Tekstur', suggestions: ['Soft', 'Crunchy', 'Wholegrain'] },
+        Cookie: { type: 'Rasa', suggestions: ['Cokelat', 'Vanilla', 'Matcha'] },
+        Beverage: { type: 'Ukuran', suggestions: ['Regular', 'Large', 'XL'] },
       };
 
-      // State
+      const refs = {
+        form: document.getElementById('productForm'),
+        name: document.getElementById('name'),
+        category: document.getElementById('category'),
+        price: document.getElementById('price'),
+        priceRaw: document.getElementById('price_raw'),
+        stock: document.getElementById('stock'),
+        description: document.getElementById('description'),
+        imageUrl: document.getElementById('image_url'),
+        variantInput: document.getElementById('variantInput'),
+        variantType: document.getElementById('variantTypeSelect'),
+        addVariantBtn: document.getElementById('addVariantBtn'),
+        variantsWrap: document.getElementById('variants'),
+        categorySuggestions: document.getElementById('categorySuggestions'),
+        imageDrop: document.getElementById('imageDrop'),
+        fileInput: document.getElementById('fileInput'),
+        imagePlaceholder: document.getElementById('imagePlaceholder'),
+        previewImage: document.getElementById('previewImage'),
+        cardImage: document.getElementById('cardImage'),
+        cardName: document.getElementById('cardName'),
+        cardCategory: document.getElementById('cardCategory'),
+        cardPrice: document.getElementById('cardPrice'),
+        cardVariants: document.getElementById('cardVariants'),
+        cardDesc: document.getElementById('cardDesc'),
+        toastContainer: document.getElementById('toastContainer'),
+        saveBtn: document.getElementById('saveBtn'),
+      };
+
       const state = { variants: [] };
 
-      // --- Helpers ---
-      function formatRupiah(angka) {
-        if (angka === '' || angka === null || isNaN(Number(angka))) return '';
-        const num = Number(angka);
-        return 'Rp ' + num.toLocaleString('id-ID');
+      function formatRupiah(value) {
+        if (!value) return '';
+        const number = Number(String(value).replace(/[^0-9]/g, '')) || 0;
+        return number === 0 ? '' : 'Rp ' + number.toLocaleString('id-ID');
       }
 
-      function parseNumberFromFormatted(formatted) {
-        return Number(String(formatted).replace(/[^0-9]/g, '')) || 0;
+      function parseNumber(value) {
+        return Number(String(value).replace(/[^0-9]/g, '')) || 0;
       }
 
-      // --- DOM refs ---
-      const category = document.getElementById('category');
-      const variantInput = document.getElementById('variantInput');
-      const variantTypeSelect = document.getElementById('variantTypeSelect');
-      const addVariantBtn = document.getElementById('addVariantBtn');
-      const variantsWrap = document.getElementById('variants');
-      const imageUrlInput = document.getElementById('image_url');
-      const previewImage = document.getElementById('previewImage');
-      const imagePlaceholder = document.getElementById('imagePlaceholder');
-      const fileInput = document.getElementById('fileInput');
-      const imageDrop = document.getElementById('imageDrop');
-      const priceInput = document.getElementById('price');
-      const priceRaw = document.getElementById('price_raw');
-      const nameInput = document.getElementById('name');
-      const descriptionInput = document.getElementById('description');
-      const cardImage = document.getElementById('cardImage');
-      const cardName = document.getElementById('cardName');
-      const cardPrice = document.getElementById('cardPrice');
-      const cardVariants = document.getElementById('cardVariants');
-      const cardCategory = document.getElementById('cardCategory');
-      const cardDesc = document.getElementById('cardDesc');
+      function hidePreview() {
+        refs.previewImage.classList.add('hidden');
+        refs.imagePlaceholder.style.display = 'flex';
+        refs.previewImage.src = '';
+      }
 
-      // --- Variant tags logic ---
+      function updateLiveCard() {
+        refs.cardName.textContent = refs.name.value.trim() || 'Nama Produk';
+        refs.cardCategory.textContent = refs.category.value || 'Kategori';
+        refs.cardPrice.textContent = formatRupiah(refs.price.value) || 'Rp 0';
+        refs.cardDesc.textContent = refs.description.value.trim() || 'Deskripsi singkat produk...';
+        refs.cardVariants.innerHTML = '';
+        state.variants.forEach(variant => {
+          const badge = document.createElement('span');
+          badge.className = 'text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700';
+          badge.textContent = `${variant.type}: ${variant.value}`;
+          refs.cardVariants.appendChild(badge);
+        });
+      }
+
+      function setCategorySuggestions(category) {
+        refs.categorySuggestions.innerHTML = '';
+        if (!category || !variantSuggestions[category]) return;
+        const data = variantSuggestions[category];
+        refs.variantType.value = data.type;
+        data.suggestions.forEach(item => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'rounded-full px-3 py-1 border border-amber-200 bg-amber-50 text-amber-800 text-xs hover:bg-amber-100';
+          button.textContent = item;
+          button.addEventListener('click', () => addVariant(data.type, item));
+          refs.categorySuggestions.appendChild(button);
+        });
+      }
+
       function renderVariants() {
-        variantsWrap.innerHTML = '';
-        cardVariants.innerHTML = '';
-        state.variants.forEach((v, i) => {
+        refs.variantsWrap.innerHTML = '';
+        state.variants.forEach((variant, index) => {
           const chip = document.createElement('div');
-          chip.className = 'chip px-3 py-1 rounded-full text-sm flex items-center gap-2';
-          chip.innerHTML = `<span class="text-gray-700">${v.type}: ${v.value}</span><button data-i="${i}" class="ml-2 text-xs text-gray-400 hover:text-red-500">×</button>`;
-          variantsWrap.appendChild(chip);
-          const removeBtn = chip.querySelector('button');
-          removeBtn.addEventListener('click', () => { state.variants.splice(i,1); renderVariants(); });
-
-          // Add to live card
-          const badge = document.createElement('div');
-          badge.className = 'text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-700';
-          badge.textContent = `${v.type}: ${v.value}`;
-          cardVariants.appendChild(badge);
+          chip.className = 'chip inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 shadow-sm';
+          chip.innerHTML = `<span class="text-sm text-gray-700">${variant.type}: ${variant.value}</span><button type="button" data-index="${index}" class="text-gray-400 hover:text-red-500 font-semibold">×</button>`;
+          chip.querySelector('button').addEventListener('click', () => {
+            state.variants.splice(index, 1);
+            renderVariants();
+            updateLiveCard();
+          });
+          refs.variantsWrap.appendChild(chip);
         });
       }
 
       function addVariant(type, value) {
-        if (!value || !type) return;
-        state.variants.push({ type, value });
+        const trimmed = value.trim();
+        if (!trimmed) return;
+        state.variants.push({ type, value: trimmed });
+        refs.variantInput.value = '';
         renderVariants();
+        updateLiveCard();
       }
 
-      addVariantBtn.addEventListener('click', () => {
-        const type = variantTypeSelect.value || 'Lainnya';
-        const val = variantInput.value.trim();
-        if (val) { addVariant(type, val); variantInput.value = ''; }
-      });
-
-      variantInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); addVariantBtn.click(); }
-      });
-
-      // --- Category-based suggestions ---
-      category.addEventListener('change', () => {
-        const val = category.value;
-        if (variantSuggestions[val]) {
-          const sugg = variantSuggestions[val];
-          variantTypeSelect.value = sugg.type || 'Lainnya';
-          // Clear current suggestions area and show small chips for suggested items
-          // We'll offer them as quick-add buttons
-          const quickAreaId = 'quickVariantSuggestions';
-          let quickArea = document.getElementById(quickAreaId);
-          if (!quickArea) {
-            quickArea = document.createElement('div');
-            quickArea.id = quickAreaId;
-            quickArea.className = 'mt-2 flex gap-2 flex-wrap';
-            variantsWrap.parentNode.insertBefore(quickArea, variantsWrap.nextSibling);
-          }
-          quickArea.innerHTML = '';
-          sugg.suggestions.forEach(s => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'text-xs px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100';
-            b.textContent = s;
-            b.addEventListener('click', () => addVariant(sugg.type, s));
-            quickArea.appendChild(b);
-          });
+      refs.addVariantBtn.addEventListener('click', () => addVariant(refs.variantType.value || 'Lainnya', refs.variantInput.value));
+      refs.variantInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          refs.addVariantBtn.click();
         }
-        updateLiveTexts();
       });
 
-      // --- Image URL preview logic (live) ---
-      function showImageFromURL(url) {
-        if (!url) { hidePreview(); return; }
-        const img = new Image();
-        img.onload = () => {
-          previewImage.src = url;
-          previewImage.classList.remove('hidden');
-          previewImage.classList.add('fade-in');
-          imagePlaceholder.style.display = 'none';
-          // Update card image
-          cardImage.src = url;
+      refs.category.addEventListener('change', () => {
+        setCategorySuggestions(refs.category.value);
+        updateLiveCard();
+      });
+
+      function loadPreviewImage(url) {
+        if (!url) {
+          hidePreview();
+          refs.cardImage.src = defaultImage;
+          return;
+        }
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          refs.previewImage.src = url;
+          refs.previewImage.classList.remove('hidden');
+          refs.previewImage.classList.add('fade-in');
+          refs.imagePlaceholder.style.display = 'none';
+          refs.cardImage.src = url;
         };
-        img.onerror = () => { hidePreview(); };
-        img.src = url;
+        tempImg.onerror = () => {
+          refs.previewImage.src = defaultImage;
+          refs.previewImage.classList.remove('hidden');
+          refs.imagePlaceholder.style.display = 'none';
+          refs.cardImage.src = defaultImage;
+        };
+        tempImg.src = url;
       }
 
-      function hidePreview() {
-        previewImage.src = '';
-        previewImage.classList.add('hidden');
-        imagePlaceholder.style.display = 'flex';
-        cardImage.src = '';
-      }
+      refs.imageUrl.addEventListener('input', event => loadPreviewImage(event.target.value.trim()));
+      refs.imageUrl.addEventListener('paste', event => setTimeout(() => loadPreviewImage(event.target.value.trim()), 50));
 
-      imageUrlInput.addEventListener('input', (e) => { showImageFromURL(e.target.value.trim()); updateLiveTexts(); });
-
-      // Handle paste into image URL field for quick preview
-      imageUrlInput.addEventListener('paste', (e) => {
-        const text = (e.clipboardData || window.clipboardData).getData('text');
-        setTimeout(()=> showImageFromURL(imageUrlInput.value.trim()), 50);
-      });
-
-      // --- Drag & drop and file input ---
-      ;['dragenter','dragover'].forEach(ev => imageDrop.addEventListener(ev, (e) => { e.preventDefault(); imageDrop.classList.add('ring-2','ring-amber-200'); }));
-      ;['dragleave','drop'].forEach(ev => imageDrop.addEventListener(ev, (e) => { e.preventDefault(); imageDrop.classList.remove('ring-2','ring-amber-200'); }));
-
-      imageDrop.addEventListener('drop', (e) => {
-        const file = e.dataTransfer.files && e.dataTransfer.files[0];
-        if (file) readFileAndPreview(file);
-      });
-
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) readFileAndPreview(file);
-      });
-
-      function readFileAndPreview(file) {
+      refs.fileInput.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
         const reader = new FileReader();
-        reader.onload = (ev) => {
-          previewImage.src = ev.target.result;
-          previewImage.classList.remove('hidden');
-          imagePlaceholder.style.display = 'none';
-          cardImage.src = ev.target.result;
-          // Clear image_url input since we used file
-          imageUrlInput.value = '';
+        reader.onload = e => {
+          refs.previewImage.src = e.target.result;
+          refs.previewImage.classList.remove('hidden');
+          refs.imagePlaceholder.style.display = 'none';
+          refs.cardImage.src = e.target.result;
         };
         reader.readAsDataURL(file);
-      }
-
-      // --- Price formatting ---
-      priceInput.addEventListener('input', (e) => {
-        const raw = parseNumberFromFormatted(e.target.value);
-        priceRaw.value = raw;
-        priceInput.value = formatRupiah(raw);
-        updateLiveTexts();
       });
 
-      // --- Live card sync ---
-      function updateLiveTexts() {
-        cardName.textContent = nameInput.value.trim() || 'Nama Produk';
-        cardPrice.textContent = formatRupiah(priceRaw.value) || 'Rp 0';
-        cardCategory.textContent = category.value || '-';
-        cardDesc.textContent = descriptionInput.value.trim() || 'Deskripsi singkat produk...';
-      }
-
-      [nameInput, descriptionInput].forEach(el => el.addEventListener('input', updateLiveTexts));
-
-      // Initial state
-      hidePreview();
-      renderVariants();
-
-      // --- Toast + save simulation ---
-      function playSuccessTone() {
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'sine'; o.frequency.value = 880; g.gain.value = 0.02;
-          o.connect(g); g.connect(ctx.destination); o.start();
-          setTimeout(()=>{ o.stop(); ctx.close(); }, 220);
-        } catch (e) { /* ignore on unsupported */ }
-      }
-
-      function showToast(message) {
-        const container = document.getElementById('toastContainer');
-        const t = document.createElement('div');
-        t.className = 'min-w-[240px] bg-white rounded-lg shadow-lg p-3 border-l-4 border-amber-400 flex items-start gap-3 animate-slideIn';
-        t.innerHTML = `<div class="flex-1"><div class="font-semibold">Sukses</div><div class="text-sm text-gray-600">${message}</div></div><button class="text-gray-400">×</button>`;
-        container.appendChild(t);
-        t.querySelector('button').addEventListener('click', ()=> t.remove());
-        playSuccessTone();
-        setTimeout(()=> t.remove(), 5000);
-      }
-
-      // small CSS animation injection (slide in)
-      const animStyle = document.createElement('style');
-      animStyle.innerHTML = `@keyframes slideIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}} .animate-slideIn{animation:slideIn .28s ease both}`;
-      document.head.appendChild(animStyle);
-
-      // Submit handler: simulate spinner, then toast
-      const form = document.getElementById('productForm');
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const saveBtn = document.getElementById('saveBtn');
-        const original = saveBtn.innerHTML;
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Menyimpan...';
-
-        setTimeout(() => {
-          saveBtn.disabled = false;
-          saveBtn.innerHTML = original;
-          // Build a nice name for toast
-          const prodName = nameInput.value.trim() || 'Produk Baru';
-          showToast(`Produk '${prodName}' Berhasil Disinkronkan ke Katalog!`);
-          // Optional: here you would send data to server (AJAX / fetch / PHP endpoint)
-        }, 1000);
-      });
-
-      // Accessibility: allow pressing space on imageDrop to open file dialog
-      imageDrop.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { fileInput.click(); } });
-
-      // Small enhancement: when page loads, format price if value preset
-      document.addEventListener('DOMContentLoaded', () => { if (priceInput.value) priceInput.dispatchEvent(new Event('input')); });
-    </script>
-  </body>
-</html>
-<!doctype html>
-<html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Naichi Bakery — Admin: Tambah Produk & Sinkronisasi Varian</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Custom small helpers */
-      .naichi-focus:focus {
-        box-shadow: 0 0 12px rgba(250,196,70,0.28), 0 6px 18px rgba(0,0,0,0.06);
-        outline: none;
-        border-color: rgba(250,196,70,0.8);
-      }
-      .fade-in { animation: fadeIn .28s ease forwards; opacity:0 }
-      @keyframes fadeIn { to { opacity: 1 } }
-      .chip { background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,246,240,0.9)); }
-    </style>
-  </head>
-  <body class="bg-gray-50 font-sans text-gray-800">
-    <div class="max-w-7xl mx-auto py-12 px-6">
-      <header class="mb-8">
-        <h1 class="text-3xl font-semibold">Admin Dashboard — Tambah Produk</h1>
-        <p class="text-sm text-gray-500 mt-1">Naichi Bakery • Tambah produk & sinkronisasi varian secara real-time</p>
-      </header>
-
-      <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Left: Form -->
-        <section class="bg-white rounded-2xl shadow-lg p-6 naichi-focus" aria-labelledby="form-title">
-          <h2 id="form-title" class="text-xl font-medium mb-4">Form Produk</h2>
-          <form id="productForm" class="space-y-4" autocomplete="off">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Nama Produk</label>
-                <input id="name" name="name" required class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="e.g., Mille Feuille Matcha" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Kategori</label>
-                <select id="category" name="category" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus">
-                  <option value="">— Pilih Kategori —</option>
-                  <option>Pastry</option>
-                  <option>Cake</option>
-                  <option>Bread</option>
-                  <option>Cookie</option>
-                  <option>Beverage</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium mb-1">Harga</label>
-                <input id="price" name="price" inputmode="numeric" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="50000" />
-                <input type="hidden" id="price_raw" name="price_raw" />
-              </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Stok</label>
-                <input id="stock" name="stock" type="number" min="0" value="10" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">Deskripsi</label>
-              <textarea id="description" name="description" rows="3" class="w-full px-4 py-2 rounded-2xl border border-gray-200 naichi-focus" placeholder="Deskripsi singkat produk untuk katalog..."></textarea>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">URL Gambar</label>
-              <input id="image_url" name="image_url" class="w-full px-4 py-2 rounded-xl border border-gray-200 naichi-focus" placeholder="https://images.unsplash.com/..." />
-              <p class="text-xs text-gray-400 mt-1">Tempel URL atau gunakan area upload di kanan untuk simulasi drag & drop.</p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-1">Varian Produk (Tags)</label>
-              <div id="variant-types" class="flex gap-2 mb-2">
-                <select id="variantTypeSelect" class="px-3 py-1 rounded-lg border border-gray-200 naichi-focus text-sm">
-                  <option value="Rasa">Rasa</option>
-                  <option value="Warna">Warna</option>
-                  <option value="Ukuran">Ukuran</option>
-                  <option value="Lainnya">Lainnya</option>
-                </select>
-                <input id="variantInput" class="flex-1 px-3 py-1 rounded-lg border border-gray-200 naichi-focus" placeholder="Ketik lalu tekan Enter untuk menambahkan tag" />
-                <button type="button" id="addVariantBtn" class="px-3 py-1 bg-amber-400 text-white rounded-lg">Tambah</button>
-              </div>
-              <div id="variants" class="flex flex-wrap gap-2"></div>
-            </div>
-
-            <div class="flex items-center justify-between pt-3">
-              <div class="text-sm text-gray-500">Preview & sinkronisasi otomatis varian berdasarkan kategori aktif.</div>
-              <div class="flex gap-2">
-                <button type="reset" class="px-4 py-2 rounded-xl border border-gray-200">Reset</button>
-                <button id="saveBtn" type="submit" class="px-4 py-2 rounded-xl bg-amber-400 text-white shadow">Simpan</button>
-              </div>
-            </div>
-          </form>
-        </section>
-
-        <!-- Right: Live Preview + Image Box -->
-        <aside class="space-y-6">
-          <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center gap-4">
-            <div id="imageDrop" class="w-full h-48 md:h-56 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden bg-gray-50 relative transition-colors">
-              <input id="fileInput" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" />
-              <div id="imagePlaceholder" class="flex flex-col items-center gap-2 text-center text-gray-400 p-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7M7 7V5a5 5 0 0 1 10 0v2"/></svg>
-                <div class="text-sm">Tarik & lepas atau klik untuk pilih gambar</div>
-                <div class="text-xs text-gray-300">Atau tempel URL pada field gambar</div>
-              </div>
-              <img id="previewImage" src="" alt="Preview" class="object-cover w-full h-full hidden transition-opacity duration-300" />
-            </div>
-            <div class="w-full text-xs text-gray-500">Drag & drop area dengan animasi mikro saat hover.</div>
-          </div>
-
-          <div class="bg-white rounded-2xl shadow-lg p-4">
-            <h3 class="text-lg font-medium mb-3">Live Product Card</h3>
-            <div id="liveCard" class="flex gap-4 items-start">
-              <div class="w-28 h-28 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 shadow-sm">
-                <img id="cardImage" src="" alt="Card image" class="object-cover w-full h-full" />
-              </div>
-              <div class="flex-1">
-                <h4 id="cardName" class="font-semibold text-lg">Nama Produk</h4>
-                <div id="cardCategory" class="text-xs text-gray-400">Kategori</div>
-                <div id="cardPrice" class="text-amber-500 font-semibold mt-2">Rp 0</div>
-                <div id="cardVariants" class="flex gap-2 flex-wrap mt-3"></div>
-                <p id="cardDesc" class="text-sm text-gray-500 mt-3">Deskripsi singkat produk...</p>
-              </div>
-            </div>
-          </div>
-        </aside>
-      </main>
-
-      <!-- Toast container -->
-      <div id="toastContainer" class="fixed top-6 right-6 z-50"></div>
-    </div>
-
-    <script>
-      // --- Data & initial mappings ---
-      const variantSuggestions = {
-        'Pastry': { type: 'Tingkat Kematangan/Isian', suggestions: ['Medium', 'Well-done', 'Isi Kacang', 'Isi Krim'] },
-        'Cake': { type: 'Ukuran Diameter', suggestions: ['15cm', '20cm', '25cm'] },
-        'Bread': { type: 'Tekstur', suggestions: ['Soft', 'Crunchy', 'Wholegrain'] },
-        'Cookie': { type: 'Rasa', suggestions: ['Cokelat', 'Vanilla', 'Matcha'] },
-        'Beverage': { type: 'Ukuran', suggestions: ['Regular', 'Large'] },
-      };
-
-      // State
-      const state = { variants: [] };
-
-      // --- Helpers ---
-      function formatRupiah(angka) {
-        if (angka === '' || angka === null || isNaN(Number(angka))) return '';
-        const num = Number(angka);
-        return 'Rp ' + num.toLocaleString('id-ID');
-      }
-
-      function parseNumberFromFormatted(formatted) {
-        return Number(String(formatted).replace(/[^0-9]/g, '')) || 0;
-      }
-
-      // --- DOM refs ---
-      const category = document.getElementById('category');
-      const variantInput = document.getElementById('variantInput');
-      const variantTypeSelect = document.getElementById('variantTypeSelect');
-      const addVariantBtn = document.getElementById('addVariantBtn');
-      const variantsWrap = document.getElementById('variants');
-      const imageUrlInput = document.getElementById('image_url');
-      const previewImage = document.getElementById('previewImage');
-      const imagePlaceholder = document.getElementById('imagePlaceholder');
-      const fileInput = document.getElementById('fileInput');
-      const imageDrop = document.getElementById('imageDrop');
-      const priceInput = document.getElementById('price');
-      const priceRaw = document.getElementById('price_raw');
-      const nameInput = document.getElementById('name');
-      const descriptionInput = document.getElementById('description');
-      const cardImage = document.getElementById('cardImage');
-      const cardName = document.getElementById('cardName');
-      const cardPrice = document.getElementById('cardPrice');
-      const cardVariants = document.getElementById('cardVariants');
-      const cardCategory = document.getElementById('cardCategory');
-      const cardDesc = document.getElementById('cardDesc');
-
-      // --- Variant tags logic ---
-      function renderVariants() {
-        variantsWrap.innerHTML = '';
-        cardVariants.innerHTML = '';
-        state.variants.forEach((v, i) => {
-          const chip = document.createElement('div');
-          chip.className = 'chip px-3 py-1 rounded-full text-sm flex items-center gap-2';
-          chip.innerHTML = `<span class="text-gray-700">${v.type}: ${v.value}</span><button data-i="${i}" class="ml-2 text-xs text-gray-400 hover:text-red-500">×</button>`;
-          variantsWrap.appendChild(chip);
-          const removeBtn = chip.querySelector('button');
-          removeBtn.addEventListener('click', () => { state.variants.splice(i,1); renderVariants(); });
-
-          // Add to live card
-          const badge = document.createElement('div');
-          badge.className = 'text-xs px-2 py-1 rounded-md bg-gray-100 text-gray-700';
-          badge.textContent = `${v.type}: ${v.value}`;
-          cardVariants.appendChild(badge);
+      ['dragenter', 'dragover'].forEach(name => {
+        refs.imageDrop.addEventListener(name, event => {
+          event.preventDefault();
+          event.stopPropagation();
+          refs.imageDrop.classList.add('border-amber-300', 'bg-amber-50');
         });
-      }
-
-      function addVariant(type, value) {
-        if (!value || !type) return;
-        state.variants.push({ type, value });
-        renderVariants();
-      }
-
-      addVariantBtn.addEventListener('click', () => {
-        const type = variantTypeSelect.value || 'Lainnya';
-        const val = variantInput.value.trim();
-        if (val) { addVariant(type, val); variantInput.value = ''; }
       });
 
-      variantInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); addVariantBtn.click(); }
+      ['dragleave', 'drop'].forEach(name => {
+        refs.imageDrop.addEventListener(name, event => {
+          event.preventDefault();
+          event.stopPropagation();
+          refs.imageDrop.classList.remove('border-amber-300', 'bg-amber-50');
+        });
       });
 
-      // --- Category-based suggestions ---
-      category.addEventListener('change', () => {
-        const val = category.value;
-        if (variantSuggestions[val]) {
-          const sugg = variantSuggestions[val];
-          variantTypeSelect.value = sugg.type || 'Lainnya';
-          // Clear current suggestions area and show small chips for suggested items
-          // We'll offer them as quick-add buttons
-          const quickAreaId = 'quickVariantSuggestions';
-          let quickArea = document.getElementById(quickAreaId);
-          if (!quickArea) {
-            quickArea = document.createElement('div');
-            quickArea.id = quickAreaId;
-            quickArea.className = 'mt-2 flex gap-2 flex-wrap';
-            variantsWrap.parentNode.insertBefore(quickArea, variantsWrap.nextSibling);
-          }
-          quickArea.innerHTML = '';
-          sugg.suggestions.forEach(s => {
-            const b = document.createElement('button');
-            b.type = 'button';
-            b.className = 'text-xs px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-100';
-            b.textContent = s;
-            b.addEventListener('click', () => addVariant(sugg.type, s));
-            quickArea.appendChild(b);
-          });
-        }
-        updateLiveTexts();
-      });
-
-      // --- Image URL preview logic (live) ---
-      function showImageFromURL(url) {
-        if (!url) { hidePreview(); return; }
-        const img = new Image();
-        img.onload = () => {
-          previewImage.src = url;
-          previewImage.classList.remove('hidden');
-          previewImage.classList.add('fade-in');
-          imagePlaceholder.style.display = 'none';
-          // Update card image
-          cardImage.src = url;
-        };
-        img.onerror = () => { hidePreview(); };
-        img.src = url;
-      }
-
-      function hidePreview() {
-        previewImage.src = '';
-        previewImage.classList.add('hidden');
-        imagePlaceholder.style.display = 'flex';
-        cardImage.src = '';
-      }
-
-      imageUrlInput.addEventListener('input', (e) => { showImageFromURL(e.target.value.trim()); updateLiveTexts(); });
-
-      // Handle paste into image URL field for quick preview
-      imageUrlInput.addEventListener('paste', (e) => {
-        const text = (e.clipboardData || window.clipboardData).getData('text');
-        setTimeout(()=> showImageFromURL(imageUrlInput.value.trim()), 50);
-      });
-
-      // --- Drag & drop and file input ---
-      ;['dragenter','dragover'].forEach(ev => imageDrop.addEventListener(ev, (e) => { e.preventDefault(); imageDrop.classList.add('ring-2','ring-amber-200'); }));
-      ;['dragleave','drop'].forEach(ev => imageDrop.addEventListener(ev, (e) => { e.preventDefault(); imageDrop.classList.remove('ring-2','ring-amber-200'); }));
-
-      imageDrop.addEventListener('drop', (e) => {
-        const file = e.dataTransfer.files && e.dataTransfer.files[0];
-        if (file) readFileAndPreview(file);
-      });
-
-      fileInput.addEventListener('change', (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (file) readFileAndPreview(file);
-      });
-
-      function readFileAndPreview(file) {
+      refs.imageDrop.addEventListener('drop', event => {
+        const file = event.dataTransfer.files[0];
+        if (!file || !file.type.startsWith('image/')) return;
+        refs.fileInput.files = event.dataTransfer.files;
         const reader = new FileReader();
-        reader.onload = (ev) => {
-          previewImage.src = ev.target.result;
-          previewImage.classList.remove('hidden');
-          imagePlaceholder.style.display = 'none';
-          cardImage.src = ev.target.result;
-          // Clear image_url input since we used file
-          imageUrlInput.value = '';
+        reader.onload = e => {
+          refs.previewImage.src = e.target.result;
+          refs.previewImage.classList.remove('hidden');
+          refs.imagePlaceholder.style.display = 'none';
+          refs.cardImage.src = e.target.result;
         };
         reader.readAsDataURL(file);
-      }
-
-      // --- Price formatting ---
-      priceInput.addEventListener('input', (e) => {
-        const raw = parseNumberFromFormatted(e.target.value);
-        priceRaw.value = raw;
-        priceInput.value = formatRupiah(raw);
-        updateLiveTexts();
       });
 
-      // --- Live card sync ---
-      function updateLiveTexts() {
-        cardName.textContent = nameInput.value.trim() || 'Nama Produk';
-        cardPrice.textContent = formatRupiah(priceRaw.value) || 'Rp 0';
-        cardCategory.textContent = category.value || '-';
-        cardDesc.textContent = descriptionInput.value.trim() || 'Deskripsi singkat produk...';
+      refs.price.addEventListener('input', event => {
+        const digits = event.target.value.replace(/[^0-9]/g, '');
+        event.target.value = formatRupiah(digits);
+        refs.priceRaw.value = parseNumber(digits);
+        updateLiveCard();
+      });
+
+      refs.name.addEventListener('input', updateLiveCard);
+      refs.description.addEventListener('input', updateLiveCard);
+      refs.category.addEventListener('input', updateLiveCard);
+
+      function createToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'animate-toast max-w-sm rounded-3xl border border-amber-100 bg-white p-4 shadow-2xl';
+        toast.innerHTML = `<div class="font-semibold text-amber-700">Berhasil</div><p class="mt-1 text-sm text-gray-700">${message}</p>`;
+        refs.toastContainer.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('opacity-0');
+          setTimeout(() => toast.remove(), 250);
+        }, 3200);
       }
 
-      [nameInput, descriptionInput].forEach(el => el.addEventListener('input', updateLiveTexts));
-
-      // Initial state
-      hidePreview();
-      renderVariants();
-
-      // --- Toast + save simulation ---
-      function playSuccessTone() {
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type = 'sine'; o.frequency.value = 880; g.gain.value = 0.02;
-          o.connect(g); g.connect(ctx.destination); o.start();
-          setTimeout(()=>{ o.stop(); ctx.close(); }, 220);
-        } catch (e) { /* ignore on unsupported */ }
-      }
-
-      function showToast(message) {
-        const container = document.getElementById('toastContainer');
-        const t = document.createElement('div');
-        t.className = 'min-w-[240px] bg-white rounded-lg shadow-lg p-3 border-l-4 border-amber-400 flex items-start gap-3 animate-slideIn';
-        t.innerHTML = `<div class="flex-1"><div class="font-semibold">Sukses</div><div class="text-sm text-gray-600">${message}</div></div><button class="text-gray-400">×</button>`;
-        container.appendChild(t);
-        t.querySelector('button').addEventListener('click', ()=> t.remove());
-        playSuccessTone();
-        setTimeout(()=> t.remove(), 5000);
-      }
-
-      // small CSS animation injection (slide in)
-      const animStyle = document.createElement('style');
-      animStyle.innerHTML = `@keyframes slideIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}} .animate-slideIn{animation:slideIn .28s ease both}`;
-      document.head.appendChild(animStyle);
-
-      // Submit handler: simulate spinner, then toast
-      const form = document.getElementById('productForm');
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const saveBtn = document.getElementById('saveBtn');
-        const original = saveBtn.innerHTML;
-        saveBtn.disabled = true;
-        saveBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Menyimpan...';
+      refs.form.addEventListener('submit', event => {
+        event.preventDefault();
+        const productName = refs.name.value.trim() || 'Produk Baru';
+        const originalText = refs.saveBtn.textContent;
+        refs.saveBtn.innerHTML = '<span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent mr-2"></span> Menyimpan...';
+        refs.saveBtn.disabled = true;
 
         setTimeout(() => {
-          saveBtn.disabled = false;
-          saveBtn.innerHTML = original;
-          // Build a nice name for toast
-          const prodName = nameInput.value.trim() || 'Produk Baru';
-          showToast(`Produk '${prodName}' Berhasil Disinkronkan ke Katalog!`);
-          // Optional: here you would send data to server (AJAX / fetch / PHP endpoint)
+          refs.saveBtn.disabled = false;
+          refs.saveBtn.textContent = originalText;
+          createToast(`Produk '${productName}' Berhasil Disinkronkan ke Katalog!`);
+          refs.form.reset();
+          state.variants = [];
+          renderVariants();
+          refs.categorySuggestions.innerHTML = '';
+          refs.priceRaw.value = '';
+          hidePreview();
+          refs.cardImage.src = defaultImage;
+          updateLiveCard();
         }, 1000);
       });
 
-      // Accessibility: allow pressing space on imageDrop to open file dialog
-      imageDrop.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { fileInput.click(); } });
+      refs.form.addEventListener('reset', () => {
+        requestAnimationFrame(() => {
+          state.variants = [];
+          refs.categorySuggestions.innerHTML = '';
+          refs.priceRaw.value = '';
+          hidePreview();
+          refs.cardImage.src = defaultImage;
+          updateLiveCard();
+        });
+      });
 
-      // Small enhancement: when page loads, format price if value preset
-      document.addEventListener('DOMContentLoaded', () => { if (priceInput.value) priceInput.dispatchEvent(new Event('input')); });
+      window.addEventListener('load', () => {
+        refs.cardImage.src = defaultImage;
+      });
     </script>
   </body>
 </html>
