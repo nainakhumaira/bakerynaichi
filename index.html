@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naichi Bakery - Premium Bakery & Pastry</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome untuk Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Custom Colors */
+        :root {
+            --warm-beige: #FDFBF7;
+            --dark-chocolate: #3E2723;
+            --gold: #D4AF37;
+            --light-gold: #F0E6D2;
+            --soft-brown: #6D4C41;
+        }
+        
+        body {
+            background-color: var(--warm-beige);
+            color: var(--dark-chocolate);
+        }
+        
+        /* Smooth Transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background: linear-gradient(to bottom, rgba(253, 251, 247, 0.95), rgba(253, 251, 247, 0.8));
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(62, 39, 35, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #FDFBF7 0%, #F0E6D2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15), transparent);
+            border-radius: 50%;
+        }
+        
+        /* Product Card */
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.08);
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(62, 39, 35, 0.15);
+        }
+        
+        .product-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            background-color: var(--gold);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #EF4444;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #3E2723, #6D4C41);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(62, 39, 35, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2C1810, #4D3631);
+            box-shadow: 0 6px 20px rgba(62, 39, 35, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--dark-chocolate);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid var(--dark-chocolate);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--dark-chocolate);
+            color: white;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--dark-chocolate);
+            position: relative;
+            padding: 8px;
+        }
+        
+        .btn-icon:hover {
+            color: var(--gold);
+            transform: scale(1.1);
+        }
+        
+        /* Wishlist Heart Animation */
+        .wishlist-btn.active {
+            color: #EF4444;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Struk/Receipt Styles */
+        .struk-header {
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .struk-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #E0D7D3;
+        }
+        
+        .struk-total {
+            background: linear-gradient(to right, #F0E6D2, #FDFBF7);
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        .struk-nota-number {
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        /* Quantity Input */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #F5F5F5;
+            padding: 4px 8px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+        
+        .quantity-control button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--dark-chocolate);
+            padding: 4px 8px;
+        }
+        
+        .quantity-control button:hover {
+            color: var(--gold);
+        }
+        
+        .quantity-control input {
+            width: 40px;
+            text-align: center;
+            border: none;
+            background: white;
+            font-weight: 600;
+        }
+        
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: right 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+        }
+        
+        .cart-sidebar.show {
+            right: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 28px;
+            }
+            
+            .product-card img {
+                height: 180px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+        
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F5F5F5;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-amber-50">
+    
+    <!-- =============== NAVBAR =============== -->
+    <nav class="navbar sticky top-0 z-50 py-4 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <i class="fas fa-bread-slice text-3xl" style="color: #D4AF37;"></i>
+                <span class="text-2xl font-bold" style="color: #3E2723;">Naichi</span>
+            </div>
+            
+            <!-- Menu Navigation (Desktop) -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#products" class="hover:text-amber-600 font-medium transition">Produk</a>
+                <a href="#about" class="hover:text-amber-600 font-medium transition">Tentang</a>
+                <a href="#contact" class="hover:text-amber-600 font-medium transition">Kontak</a>
+            </div>
+            
+            <!-- Icons -->
+            <div class="flex items-center gap-4">
+                <!-- Wishlist -->
+                <button class="btn-icon" id="wishlistToggle" title="Wishlist">
+                    <i class="far fa-heart"></i>
+                    <span class="badge-count" id="wishlistCount" style="display: none;">0</span>
+                </button>
+                
+                <!-- Cart -->
+                <button class="btn-icon" id="cartToggle" title="Keranjang Belanja">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge-count" id="cartCount" style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- =============== HERO SECTION =============== -->
+    <section class="hero-section py-16 md:py-24 px-6 lg:px-12 relative">
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4" style="color: #3E2723;">
+                Kelembutan Autentik di Setiap Gigitan
+            </h1>
+            <p class="text-lg md:text-xl mb-8 text-gray-600">
+                Rasakan pengalaman bakery premium dengan resep tradisional bertemu inovasi modern. Setiap produk dibuat dengan cinta dan bahan-bahan pilihan terbaik.
+            </p>
+            <button class="btn-primary" onclick="scrollToProducts()">
+                <i class="fas fa-arrow-down mr-2"></i> Jelajahi Menu
+            </button>
+        </div>
+    </section>
+    
+    <!-- =============== PRODUCTS SECTION =============== -->
+    <section id="products" class="py-16 md:py-24 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- Section Title -->
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4" style="color: #3E2723;">Menu Spesial Kami</h2>
+                <p class="text-lg text-gray-600 mb-8">Pilihan premium dari tiga kategori istimewa</p>
+                
+                <!-- Filter Categories -->
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button class="category-filter badge" data-category="all" style="background-color: #D4AF37;">Semua</button>
+                    <button class="category-filter badge" data-category="Roti Manis" style="background-color: #6D4C41;">Roti Manis</button>
+                    <button class="category-filter badge" data-category="Pastry & Croissant" style="background-color: #6D4C41;">Pastry & Croissant</button>
+                    <button class="category-filter badge" data-category="Cake & Dessert" style="background-color: #6D4C41;">Cake & Dessert</button>
+                </div>
+            </div>
+            
+            <!-- Products Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="productsContainer">
+                <!-- Product cards akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============== ABOUT SECTION =============== -->
+    <section id="about" class="py-16 md:py-24 px-6 lg:px-12" style="background: linear-gradient(135deg, #F0E6D2, #FDFBF7);">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-6" style="color: #3E2723;">Tentang Naichi Bakery</h2>
+            <p class="text-lg text-gray-600 mb-4">
+                Naichi Bakery adalah peleburan sempurna antara tradisi Jepang dan keanggunan Prancis. Sejak 2020, kami berkomitmen menghadirkan roti dan pastry berkualitas premium dengan sentuhan lokal.
+            </p>
+            <p class="text-lg text-gray-600">
+                Setiap produk dibuat fresh setiap hari menggunakan bahan-bahan pilihan, tanpa pengawet, hanya untuk memastikan Anda mendapatkan roti terbaik.
+            </p>
+        </div>
+    </section>
+    
+    <!-- =============== CONTACT SECTION =============== -->
+    <section id="contact" class="py-16 md:py-24 px-6 lg:px-12">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-12" style="color: #3E2723;">Hubungi Kami</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <i class="fas fa-map-marker-alt text-4xl mb-4" style="color: #D4AF37;"></i>
+                    <h3 class="font-bold mb-2">Lokasi</h3>
+                    <p class="text-gray-600">Jl. Sunset No. 123, Jakarta Pusat</p>
+                </div>
+                <div>
+                    <i class="fas fa-phone text-4xl mb-4" style="color: #D4AF37;"></i>
+                    <h3 class="font-bold mb-2">Telepon</h3>
+                    <p class="text-gray-600">+62 812-3456-7890</p>
+                </div>
+                <div>
+                    <i class="fas fa-envelope text-4xl mb-4" style="color: #D4AF37;"></i>
+                    <h3 class="font-bold mb-2">Email</h3>
+                    <p class="text-gray-600">info@naichi.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- =============== FOOTER =============== -->
+    <footer class="bg-gray-900 text-white py-12 px-6 lg:px-12 mt-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Naichi Bakery</h3>
+                    <p class="text-gray-400">Bakery premium dengan standar internasional dan sentuhan lokal.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Menu</h3>
+                    <ul class="text-gray-400 space-y-2">
+                        <li><a href="#products" class="hover:text-white transition">Produk</a></li>
+                        <li><a href="#about" class="hover:text-white transition">Tentang</a></li>
+                        <li><a href="#contact" class="hover:text-white transition">Kontak</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Sosial Media</h3>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-2xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook text-2xl"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Naichi Bakery. Semua hak dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- =============== CART SIDEBAR =============== -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="p-6 h-full flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                <h2 class="text-2xl font-bold" style="color: #3E2723;">Keranjang</h2>
+                <button class="btn-icon" onclick="toggleCart()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Cart Items -->
+            <div class="flex-1 overflow-y-auto mb-6" id="cartItems">
+                <p class="text-center text-gray-400 py-8">Keranjang kosong</p>
+            </div>
+            
+            <!-- Cart Summary -->
+            <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">Rp 0</span>
+                </div>
+                <div class="flex justify-between mb-4 text-gray-600">
+                    <span>PPN (11%):</span>
+                    <span id="taxAmount">Rp 0</span>
+                </div>
+                <div class="flex justify-between text-xl font-bold mb-6 pb-6 border-b border-gray-200">
+                    <span>Total:</span>
+                    <span id="totalPrice" style="color: #D4AF37;">Rp 0</span>
+                </div>
+                
+                <!-- Action Buttons -->
+                <button class="btn-primary w-full mb-3" onclick="openCheckoutModal()">
+                    <i class="fas fa-credit-card mr-2"></i> Bayar Sekarang
+                </button>
+                <button class="btn-secondary w-full" onclick="toggleCart()">
+                    Lanjut Belanja
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- =============== CHECKOUT MODAL (STRUK) =============== -->
+    <div class="modal" id="checkoutModal">
+        <div class="modal-content">
+            <!-- Struk Header -->
+            <div class="struk-header">
+                <div style="font-size: 24px; font-weight: bold; color: #3E2723; margin-bottom: 8px;">
+                    Naichi Bakery
+                </div>
+                <div class="struk-nota-number">
+                    Nota #<span id="notaNumber"></span>
+                </div>
+                <div class="text-sm text-gray-500 mt-2">
+                    <span id="notaDate"></span>
+                </div>
+            </div>
+            
+            <!-- Items List -->
+            <div id="checkoutItems" class="mb-4">
+                <!-- Items akan diisi oleh JavaScript -->
+            </div>
+            
+            <!-- Totals -->
+            <div class="struk-item font-semibold">
+                <span>Subtotal:</span>
+                <span id="checkoutSubtotal">Rp 0</span>
+            </div>
+            <div class="struk-item text-gray-600">
+                <span>PPN (11%):</span>
+                <span id="checkoutTax">Rp 0</span>
+            </div>
+            <div class="struk-total">
+                <div class="flex justify-between text-lg">
+                    <span>Total Bayar:</span>
+                    <span id="checkoutTotal" style="color: #D4AF37;">Rp 0</span>
+                </div>
+            </div>
+            
+            <!-- Payment Method -->
+            <div class="mt-6 mb-6">
+                <label class="block font-semibold mb-3">Metode Pembayaran:</label>
+                <div class="flex flex-col gap-3">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment" value="E-Wallet" class="mr-3" checked>
+                        <i class="fas fa-wallet mr-2" style="color: #D4AF37;"></i> E-Wallet
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="payment" value="Transfer Bank" class="mr-3">
+                        <i class="fas fa-university mr-2" style="color: #D4AF37;"></i> Transfer Bank
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3">
+                <button class="btn-primary flex-1" onclick="printReceipt()">
+                    <i class="fas fa-print mr-2"></i> Cetak Struk
+                </button>
+                <button class="btn-secondary flex-1" onclick="completeCheckout()">
+                    <i class="fas fa-check mr-2"></i> Selesai
+                </button>
+            </div>
+            <button class="btn-secondary w-full mt-3" onclick="closeCheckoutModal()">
+                Kembali ke Keranjang
+            </button>
+        </div>
+    </div>
+    
+    <!-- Overlay untuk close modal -->
+    <div id="checkoutOverlay" class="modal" onclick="closeCheckoutModal()"></div>
+    
+    <!-- =============== SCRIPT =============== -->
+    <script src="script.js"></script>
+    
+</body>
+</html>
